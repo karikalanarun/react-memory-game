@@ -38,6 +38,7 @@ const GameBoard = ({ images }) => {
   const [genImages, setGenImages] = useState([]);
   const [firstSelected, setFirst] = useState(null);
   const [secondSelected, setSecond] = useState(null);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     setGenImages(
@@ -55,6 +56,7 @@ const GameBoard = ({ images }) => {
           setGenImages(closeImage(...secondSelected, genImages));
         }, 500);
       } else {
+        setScore((s) => s + 1);
         console.log("success");
       }
       setFirst(null);
@@ -69,32 +71,40 @@ const GameBoard = ({ images }) => {
   //   }, [genImages]);
 
   return images.length === 8 ? (
-    <table>
-      <tbody>
-        {genImages.map((rowImages, i) => (
-          <tr key={i}>
-            {rowImages.map(({ image, opened }, j) => (
-              <td
-                key={j}
-                className="col"
-                onClick={
-                  (!opened &&
-                    (() => {
-                      setGenImages(openImage(i, j, genImages));
-                      firstSelected === null
-                        ? setFirst([i, j])
-                        : setSecond([i, j]);
-                    })) ||
-                  null
-                }
-              >
-                {opened && <img className="image" src={image} />}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div>
+      <table>
+        <tbody>
+          {genImages.map((rowImages, i) => (
+            <tr key={i}>
+              {rowImages.map(({ image, opened }, j) => (
+                <td
+                  key={j}
+                  className="col"
+                  onClick={
+                    (!opened &&
+                      (() => {
+                        setGenImages(openImage(i, j, genImages));
+                        firstSelected === null
+                          ? setFirst([i, j])
+                          : setSecond([i, j]);
+                      })) ||
+                    null
+                  }
+                >
+                  {opened && (
+                    <img className="image" alt="openedImage" src={image} />
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p>Your Score:{score}</p>
+      <button type="reset" onClick={() => window.location.reload()}>
+        Restart
+      </button>
+    </div>
   ) : (
     <h1>You should give 8 images excatly</h1>
   );
